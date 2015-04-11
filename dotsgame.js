@@ -78,66 +78,154 @@ Element.prototype = {
   },
   check : function (id,player,table,board) {
     var a = id.split("");
-    var p = this.ele.id.split("");
+    var b = this.ele.id.split("");
     var color = (player===0) ? "red.gif" : color="blue.gif";
     var maxx=board.x-1;
     var maxy=board.y-1;
-    var taxicab = Math.abs(a[1]-p[1])+Math.abs(a[2]-p[2]);
-    if (taxicab==1) {
-      if (a[1]==p[1] && a[2]<p[2]) {
+    var taxicabd = Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2]);
+    if (taxicabd==1) {
+      if (a[1]==b[1] && a[2]<b[2]) {
         var i=window.document.getElementById("_ve"+a[1]+a[2]);
         i.src=color;
-        if (a[1]>0 && a[2]>0 && p[1]>0 && p[2]>0 && a[1]<maxx && p[1]<maxx && a[2]<maxy && p[2]<maxy) {
-          table[a[2]][a[1]-1].left=true;
-          table[a[2]][a[1]].right=true;
+        if (a[1]>0 && a[2]>0 && b[1]>0 && b[2]>0 && a[1]<maxx && b[1]<maxx && a[2]<maxy && b[2]<maxy) {
+          //table[a[2]][a[1]-1].left=true;
+          //table[a[2]][a[1]].right=true;
+          //var left=table[a[2]][a[1]-1].isClosed();
+          //var right=table[a[2]][a[1]].isClosed();
+          table[a[2]][a[1]-1].right=true;
+          table[a[2]][a[1]].left=true;
+          var left=table[a[2]][a[1]-1].isClosed();
+          var right=table[a[2]][a[1]].isClosed();   
+          } else if (a[1]==0 || b[1]==0) {
+          //table[a[2]][a[1]].right=true;
+          //var right=table[a[2]][a[1]].isClosed();
+          table[a[2]][a[1]].left=true;
+          var left=table[a[2]][a[1]].isClosed();
+          //table[a[2]][a[1]-1].right=true;
+          //var right=table[a[2]][a[1]-1].isClosed();
+        } else if ((a[1]==maxx && a[2]==0) || (b[1]==maxx && b[2]==0)) {
+          table[0][a[1]-1].right=true;
+          var right=table[0][a[1]-1].isClosed();
+        } else if (a[2]==0 || b[2]==0) {
+          table[0][a[1]-1].right=true;
+          table[0][a[1]].left=true;
+          var right=table[0][a[1]-1].isClosed();
+          var left=table[0][a[1]].isClosed();
+        } else if (a[2]==maxx || b[2]==maxy) {
+          table[a[2]][a[1]-1].right=true;
+          table[a[2]][a[1]].left=true;
           var left=table[a[2]][a[1]-1].isClosed();
           var right=table[a[2]][a[1]].isClosed();
-          if (left || right) {
-            alert("closed");
-          }
         }
-      } else if (a[1]==p[1] && a[2]>p[2]) {
-        var i=window.document.getElementById("_ve"+a[1]+p[2]);
+      } else if (a[1]==b[1] && a[2]>b[2]) {
+        var i=window.document.getElementById("_ve"+a[1]+b[2]);
         i.src=color;
-        if (a[1]>0 && a[2]>0 && p[1]>0 && p[2]>0 && a[1]<maxx && p[1]<maxx && a[2]<maxy && p[2]<maxy) {
-          table[p[2]][a[1]-1].left=true;
-          table[p[2]][a[1]].right=true;
-          var left=table[p[2]][a[1]-1].isClosed();
-          var right=table[p[2]][a[1]].isClosed();
-          if (left || right) {
-            alert("closed");
-          }
+        if (a[1]>0 && a[2]>0 && b[1]>0 && b[2]>0 && a[1]<maxx && b[1]<maxx && a[2]<maxy && b[2]<maxy) {
+          //table[b[2]][a[1]-1].left=true;
+          //table[b[2]][a[1]].right=true;
+          table[b[2]][a[1]-1].right=true;
+          table[b[2]][a[1]].left=true;
+          var right=table[b[2]][a[1]-1].isClosed();
+          var left=table[b[2]][a[1]].isClosed();
+        } else if (a[1]==0 || b[1]==0) {
+          //table[b[2]][a[1]].right=true;
+          //var right=table[b[2]][a[1]].isClosed();
+          //table[b[2]][a[1]-1].left=true;
+          //var left=table[b[2]][a[1]-1].isClosed();
+          table[a[2]-1][a[1]].left=true;
+          var left=table[a[2]-1][a[1]].isClosed();
+        } else if (a[1]==maxx || b[1]==maxx) {
+          //table[b[2]][a[1]-1].left=true;
+          //var left=table[b[2]][a[1]-1].isClosed();
+          table[b[2]][a[1]-1].right=true;
+          var left=table[b[2]][a[1]-1].isClosed();
+        } else if (a[2]==0 || b[2]==0) {
+          table[0][a[1]].left=true;
+          table[0][a[1]-1].right=true;
+          var left=table[0][a[1]].isClosed();
+          var right=table[0][a[1]-1].isClosed();
+        } else if (a[2]==maxx || b[2]==maxy) {
+          table[b[2]][a[1]-1].right=true;
+          table[b[2]][a[1]].left=true;
+          var left=table[b[2]][a[1]-1].isClosed();
+          var right=table[b[2]][a[1]].isClosed();
         }
-      } else if (a[2]==p[2] && a[1]<p[1]) {
+      } else if (a[2]==b[2] && a[1]<b[1]) {
         var i=window.document.getElementById("_he"+a[1]+a[2]);
         i.src=color;
-        if (a[1]>0 && a[2]>0 && p[1]>0 && p[2]>0 && a[1]<maxx && p[1]<maxx && a[2]<maxy && p[2]<maxy) {
+        if (a[1]>0 && a[2]>0 && b[1]>0 && b[2]>0 && a[1]<maxx && b[1]<maxx && a[2]<maxy && b[2]<maxy) {
           table[a[2]][a[1]].top=true;
           table[a[2]-1][a[1]].bottom=true;
-          var top=table[a[2]][a[1]].isClosed();
-          var bottom=table[a[2]-1][a[1]].isClosed();
-          if (top || bottom) {
-            alert("closed");
-          }
+          var left=table[a[2]][a[1]].isClosed();
+          var right=table[a[2]-1][a[1]].isClosed();
+        } else if ((a[1]==0 && a[2]==0) || (b[1]==0 && b[2]==0)) {
+          table[a[2]][a[1]].top=true;
+          var left=table[a[2]][a[1]].isClosed();
+        } else if (a[2]==maxx && b[2]==maxy) {
+          table[a[2]-1][a[1]].bottom=true;
+          var right=table[a[2]-1][a[1]].isClosed();
+        } else if (a[1]==0 || b[1]==0) {
+          table[a[2]][a[1]].top=true;
+          table[a[2]-1][a[1]].bottom=true;
+          var left=table[a[2]][a[1]].isClosed();
+          var right=table[a[2]-1][b[2]].isClosed();
+        } else if ((a[1]==maxx && a[2]==0) || (b[1]==maxx && b[2]==0)) {
+          table[a[2]][b[1]-1].top=true;
+          var left=table[a[2]][b[1]-1].isClosed();
+        } else if (a[1]==maxx || b[1]==maxx) {
+          table[a[2]-1][a[1]].bottom=true;
+          table[a[2]][a[1]].top=true;
+          var left=table[a[2]][a[1]].isClosed();
+          var right=table[a[2]-1][a[1]].isClosed();
+        } else if (a[2]==0 || b[2]==0) {
+          table[a[2]][a[1]].top=true;
+          var left=table[a[2]][a[1]].isClosed();
         }
-      } else if (a[2]==p[2] && a[1]>p[1]) {
-        var i=window.document.getElementById("_he"+p[1]+a[2]);
+      } else if (a[2]==b[2] && a[1]>b[1]) {
+        var i=window.document.getElementById("_he"+b[1]+a[2]);
         i.src=color;
-        if (a[1]>0 && a[2]>0 && p[1]>0 && p[2]>0 && a[1]<maxx && p[1]<maxx && a[2]<maxy && p[2]<maxy) {
-          table[a[2]][p[1]].top=true;
-          table[a[2]-1][p[1]].bottom=true;
-          var top=table[a[2]][p[1]].isClosed();
-          var bottom=table[a[2]-1][p[2]].isClosed();
-          if (top || bottom) {
-            alert("closed");
-          }
+        if (a[1]>0 && a[2]>0 && b[1]>0 && b[2]>0 && a[1]<maxx && b[1]<maxx && a[2]<maxy && b[2]<maxy) {
+          table[a[2]][b[1]].top=true;
+          table[a[2]-1][b[1]].bottom=true;
+          var left=table[a[2]][b[1]].isClosed();
+          var right=table[a[2]-1][b[1]].isClosed();
+        } else if ((a[1]==0 && a[2]==0) || (b[1]==0 && b[2]==0)) {
+          table[a[2]][b[1]].top=true;
+          var left=table[a[2]][b[1]].isClosed();
+        } else if (a[2]==maxx && b[2]==maxy) {
+          table[a[2]-1][b[1]].bottom=true;
+          var right=table[a[2]-1][b[1]].isClosed();  
+        } else if (a[1]==0 || b[1]==0) {
+          table[a[2]][b[1]].top=true;
+          table[a[2]-1][b[1]].bottom=true;
+          var left=table[a[2]][b[1]].isClosed();
+          var right=table[a[2]-1][b[2]].isClosed();
+        } else if ((a[1]==maxx && a[2]==maxy) || (b[1]==maxx && b[2]==maxy)) {
+          table[a[2]][b[1]].top=true;
+          //table[a[2]-1][b[1]].bottom=true;
+          var left=table[a[2]][b[1]].isClosed();
+          //var right=table[a[2]-1][b[2]].isClosed();
+        } else if ((a[1]==maxx && a[2]==0) || (b[1]==maxx && b[2]==0)) {
+          table[a[2]][b[1]].top=true;
+          var left=table[a[2]][b[1]].isClosed();
+        } else if (a[1]==maxx || b[1]==maxx) {
+          table[a[2]][b[1]].top=true;
+          table[a[2]-1][b[1]].bottom=true;
+          var left=table[a[2]][b[1]].isClosed();
+          var right=table[a[2]-1][b[2]].isClosed();
+        } else if (a[2]==0 || b[2]==0) {
+          table[a[2]][b[1]].top=true;
+          var left=table[a[2]][b[1]].isClosed();
         }
+      }
+      if (left || right) {
+        alert ("closed");
       }
       window.document.getElementById("_"+id).checked=false;
       this.checked=false;
       window.document.getElementById("_"+this.ele.id).checked=false;
       return true;
-    } else if (d>1) {
+    } else if (taxicabd>1) {
       //window.document.getElementById("_"+id).checked=false;
       this.checked=false;
       window.document.getElementById("_"+this.ele.id).checked=false;
