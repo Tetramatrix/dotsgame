@@ -85,93 +85,97 @@ Element.prototype = {
     var taxicabd = Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2]);
     if (taxicabd==1) {
       if (a[1]==b[1] && a[2]<b[2]) {
-        var i=window.document.getElementById("_ve"+a[1]+a[2]);
+        var i=window.document.getElementById("_ve"+a[2]+a[1]);
         i.src=color;
         if (a[1]>0 && a[2]>0 && b[1]>0 && b[2]>0 && a[1]<maxx && b[1]<maxx && a[2]<maxy && b[2]<maxy) {
-          //table[a[2]][a[1]-1].left=true;
-          //table[a[2]][a[1]].right=true;
-          //var left=table[a[2]][a[1]-1].isClosed();
-          //var right=table[a[2]][a[1]].isClosed();
           table[a[2]][a[1]-1].right=true;
           table[a[2]][a[1]].left=true;
           var left=table[a[2]][a[1]-1].isClosed();
           var right=table[a[2]][a[1]].isClosed();   
-          } else if (a[1]==0 || b[1]==0) {
-          //table[a[2]][a[1]].right=true;
-          //var right=table[a[2]][a[1]].isClosed();
+        } else if (a[1]==0 || b[1]==0) {
           table[a[2]][a[1]].left=true;
           var left=table[a[2]][a[1]].isClosed();
-          //table[a[2]][a[1]-1].right=true;
-          //var right=table[a[2]][a[1]-1].isClosed();
         } else if ((a[1]==maxx && a[2]==0) || (b[1]==maxx && b[2]==0)) {
           table[0][a[1]-1].right=true;
           var right=table[0][a[1]-1].isClosed();
+        } else if (a[1]==maxx || b[1]==maxx) {
+          table[a[2]][a[1]-1].right=true;
+          var right=table[a[2]][a[1]-1].isClosed();
         } else if (a[2]==0 || b[2]==0) {
           table[0][a[1]-1].right=true;
           table[0][a[1]].left=true;
           var right=table[0][a[1]-1].isClosed();
           var left=table[0][a[1]].isClosed();
-        } else if (a[2]==maxx || b[2]==maxy) {
-          table[a[2]][a[1]-1].right=true;
-          table[a[2]][a[1]].left=true;
-          var left=table[a[2]][a[1]-1].isClosed();
-          var right=table[a[2]][a[1]].isClosed();
+        } else if (a[2]==maxy || b[2]==maxy) {
+          table[a[2]][b[1]-1].right=true;
+          table[a[2]][b[1]].left=true;
+          var right=table[a[2]][b[1]-1].isClosed();
+          var left=table[a[2]][b[1]].isClosed();
         }
       } else if (a[1]==b[1] && a[2]>b[2]) {
-        var i=window.document.getElementById("_ve"+a[1]+b[2]);
+        var i=window.document.getElementById("_ve"+b[2]+a[1]);
         i.src=color;
         if (a[1]>0 && a[2]>0 && b[1]>0 && b[2]>0 && a[1]<maxx && b[1]<maxx && a[2]<maxy && b[2]<maxy) {
-          //table[b[2]][a[1]-1].left=true;
-          //table[b[2]][a[1]].right=true;
           table[b[2]][a[1]-1].right=true;
           table[b[2]][a[1]].left=true;
           var right=table[b[2]][a[1]-1].isClosed();
           var left=table[b[2]][a[1]].isClosed();
         } else if (a[1]==0 || b[1]==0) {
-          //table[b[2]][a[1]].right=true;
-          //var right=table[b[2]][a[1]].isClosed();
-          //table[b[2]][a[1]-1].left=true;
-          //var left=table[b[2]][a[1]-1].isClosed();
-          table[a[2]-1][a[1]].left=true;
-          var left=table[a[2]-1][a[1]].isClosed();
-        } else if (a[1]==maxx || b[1]==maxx) {
-          //table[b[2]][a[1]-1].left=true;
-          //var left=table[b[2]][a[1]-1].isClosed();
+          table[b[2]][a[1]].left=true;
+          var left=table[b[2]][a[1]].isClosed();
+        } else if (a[1]==maxy && a[2]==maxx|| b[1]==maxy && b[2]==maxx) {
           table[b[2]][a[1]-1].right=true;
           var left=table[b[2]][a[1]-1].isClosed();
+        } else if ((a[1]==maxx && a[2]==0) || (b[1]==maxx && b[2]==0)) {
+          table[0][a[1]-1].right=true;
+          var right=table[0][a[1]-1].isClosed();
         } else if (a[2]==0 || b[2]==0) {
           table[0][a[1]].left=true;
           table[0][a[1]-1].right=true;
           var left=table[0][a[1]].isClosed();
           var right=table[0][a[1]-1].isClosed();
-        } else if (a[2]==maxx || b[2]==maxy) {
+        } else if (a[1]==maxy || b[1]==maxy) {
+          table[b[2]][a[1]].left=true;
+          table[b[2]][a[1]-1].right=true;
+          var right=table[b[2]][a[1]].isClosed();
+          var left=table[b[2]][a[1]-1].isClosed();
+        } else if (a[1]==maxx || b[1]==maxx) {
+          table[b[2]][a[1]-1].right=true;
+          var right=table[b[2]][a[1]-1].isClosed();
+        } else if (a[2]==maxy || b[2]==maxy) {
           table[b[2]][a[1]-1].right=true;
           table[b[2]][a[1]].left=true;
           var left=table[b[2]][a[1]-1].isClosed();
           var right=table[b[2]][a[1]].isClosed();
         }
       } else if (a[2]==b[2] && a[1]<b[1]) {
-        var i=window.document.getElementById("_he"+a[1]+a[2]);
+        var i=window.document.getElementById("_he"+a[2]+a[1]);
         i.src=color;
         if (a[1]>0 && a[2]>0 && b[1]>0 && b[2]>0 && a[1]<maxx && b[1]<maxx && a[2]<maxy && b[2]<maxy) {
-          table[a[2]][a[1]].top=true;
           table[a[2]-1][a[1]].bottom=true;
-          var left=table[a[2]][a[1]].isClosed();
-          var right=table[a[2]-1][a[1]].isClosed();
+          table[a[2]][a[1]].top=true;
+          var left=table[a[2]-1][a[1]].isClosed();
+          var right=table[a[2]][a[1]].isClosed();
         } else if ((a[1]==0 && a[2]==0) || (b[1]==0 && b[2]==0)) {
           table[a[2]][a[1]].top=true;
           var left=table[a[2]][a[1]].isClosed();
-        } else if (a[2]==maxx && b[2]==maxy) {
+        } else if (a[2]==maxy && b[2]==maxy) {
           table[a[2]-1][a[1]].bottom=true;
           var right=table[a[2]-1][a[1]].isClosed();
+        } else if (a[1]==0 && b[2]==maxy) {
+          table[b[2]-1][a[1]].bottom=true;
+          var right=table[b[2]-1][a[1]].isClosed();
         } else if (a[1]==0 || b[1]==0) {
-          table[a[2]][a[1]].top=true;
-          table[a[2]-1][a[1]].bottom=true;
-          var left=table[a[2]][a[1]].isClosed();
-          var right=table[a[2]-1][b[2]].isClosed();
+          table[b[1]][a[1]].top=true;
+          table[b[1]-1][a[1]].bottom=true;
+          var left=table[b[1]][a[1]].isClosed();
+          var right=table[b[1]-1][a[1]].isClosed();
         } else if ((a[1]==maxx && a[2]==0) || (b[1]==maxx && b[2]==0)) {
           table[a[2]][b[1]-1].top=true;
           var left=table[a[2]][b[1]-1].isClosed();
+        } else if (a[1]==maxx && a[2]==maxy || b[1]==maxx && b[2]==maxy) {
+          table[a[2]-1][a[1]].bottom=true;
+          var right=table[a[2]-1][a[1]].isClosed();  
         } else if (a[1]==maxx || b[1]==maxx) {
           table[a[2]-1][a[1]].bottom=true;
           table[a[2]][a[1]].top=true;
@@ -182,19 +186,22 @@ Element.prototype = {
           var left=table[a[2]][a[1]].isClosed();
         }
       } else if (a[2]==b[2] && a[1]>b[1]) {
-        var i=window.document.getElementById("_he"+b[1]+a[2]);
+        var i=window.document.getElementById("_he"+a[2]+b[1]);
         i.src=color;
         if (a[1]>0 && a[2]>0 && b[1]>0 && b[2]>0 && a[1]<maxx && b[1]<maxx && a[2]<maxy && b[2]<maxy) {
-          table[a[2]][b[1]].top=true;
           table[a[2]-1][b[1]].bottom=true;
-          var left=table[a[2]][b[1]].isClosed();
-          var right=table[a[2]-1][b[1]].isClosed();
+          table[a[2]][b[1]].top=true;
+          var left=table[a[2]-1][b[1]].isClosed();
+          var right=table[a[2]][b[1]].isClosed();
         } else if ((a[1]==0 && a[2]==0) || (b[1]==0 && b[2]==0)) {
           table[a[2]][b[1]].top=true;
           var left=table[a[2]][b[1]].isClosed();
-        } else if (a[2]==maxx && b[2]==maxy) {
+        } else if (a[1]==maxx && a[2]==maxy || b[1]==maxx && b[2]==maxy) {
           table[a[2]-1][b[1]].bottom=true;
           var right=table[a[2]-1][b[1]].isClosed();  
+        } else if (a[2]==maxy && b[2]==maxy) {
+          table[b[2]-1][b[1]].bottom=true;
+          var right=table[b[2]-1][b[1]].isClosed();  
         } else if (a[1]==0 || b[1]==0) {
           table[a[2]][b[1]].top=true;
           table[a[2]-1][b[1]].bottom=true;
@@ -206,8 +213,8 @@ Element.prototype = {
           var left=table[a[2]][b[1]].isClosed();
           //var right=table[a[2]-1][b[2]].isClosed();
         } else if ((a[1]==maxx && a[2]==0) || (b[1]==maxx && b[2]==0)) {
-          table[a[2]][b[1]].top=true;
-          var left=table[a[2]][b[1]].isClosed();
+          table[a[2]][a[1]-1].top=true;
+          var left=table[a[2]][a[1]-1].isClosed();
         } else if (a[1]==maxx || b[1]==maxx) {
           table[a[2]][b[1]].top=true;
           table[a[2]-1][b[1]].bottom=true;
@@ -340,35 +347,35 @@ Board.prototype = {
     }
   },
   Create : function(x,y) {
-    for (i=0,j=0;i<(x-1);i++) {
-      this.table[i] = new Array(y-1);
+    for (i=0,j=0,endy=(y-1),endx=(x-1);i<endy;i++) {
+      this.table[i] = new Array(endx);
     }
-    for (i=0,j=0;i<x;i++) {
-      for (j=0;j<y;j++) {
+    for (i=0,j=0;i<y;i++) {
+      for (j=0;j<x;j++) {
         this.AddDot(new Element(j,i,"d"));
-        if (j<(y-1)) {    
-          this.AddHEdge(new Element(j,i,"he",25,5));
+        if (j<endx) {    
+          this.AddHEdge(new Element(i,j,"he",25,5));
         }
       }
-      if (i<(x-1)) {
-        this.AddNewline(new Element(j,i));
-        for (j=0;j<y;j++) {
+      this.AddNewline(new Element(i,j));
+      if (i<endy) {
+        for (j=0;j<x;j++) {
           if (j==0) {
-            this.AddVEdge(new Element(j,i,"ve",5,25,7));
+            this.AddVEdge(new Element(i,j,"ve",5,25,7));
           } else {
-            this.AddVEdge(new Element(j,i,"ve",5,25));
+            this.AddVEdge(new Element(i,j,"ve",5,25));
           }
-          if (j<(y-1)) {    
-            this.AddBlock(new Element(j,i,"b",40,25));
+          if (j<endx) {    
+            this.AddBlock(new Element(i,j,"b",40,25));
           }
         }
+        this.AddNewline(new Element(i+1,j+1));
       }
-      this.AddNewline(new Element(i+1,j));
     }
   }
 }
 
 var test3 = function () {
- var cd = new Board(5,5,new List());
+ var cd = new Board(5,4,new List());
 }
 var a = new test3();
