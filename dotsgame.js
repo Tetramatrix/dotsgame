@@ -35,6 +35,22 @@ List.prototype = {
   }
 };
  
+var Edge = function (table) {
+  this.table=table;
+}
+
+Edge.prototype = {
+  right : function(x,y) {
+    return this.table[x][y].right=true;
+  },
+  left : function (x,y) {
+    return this.table[x][y].left=true;
+  },
+  isClosed : function (x,y) {
+    return this.table[x][y].isClosed();
+  }
+}
+
 var Side = function (x1,y1,x2,y2) {
   this.x1=x1;
   this.y1=y1;
@@ -72,6 +88,37 @@ Side.prototype = {
   xcw : function () {
     if (this.x1>this.x2) return true;
     return false;
+  },
+  xout : function () {
+    if (this.x1==0 || this.x2==0) return true;
+    return false;
+  },
+  bottomright : function (maxx,maxy) {
+    return (this.x1==maxy && this.y1==maxx) || (this.x2==maxy && this.y2==maxx);
+  },
+  bottomright2 : function (maxx,maxy) {
+    return (this.x1==maxx && this.y1==maxy) || (this.x2==maxx && this.y2==maxy);
+  },
+  upperright : function (maxx,maxy) {
+    return (this.x1==maxx && this.y1==0) || (this.x2==maxx && this.y2==0);  
+  },
+  upperleft : function () {
+    return (this.x1==0 && this.y1==0) || (this.x2==0 && this.y2==0);
+  },
+  yleft : function () {
+    return (this.y1==0 || this.y2==0);
+  },
+  yright : function (maxy) {
+    return (this.y1==maxy || this.y2==maxy);
+  },
+  xright : function (maxy) {
+    return (this.x1==maxy || this.x2==maxy); 
+  },
+  upperleft2 : function (maxy) {
+    return this.x1==0 && this.y2==maxy;
+  },
+  upperright2 : function (maxx) {
+    return (this.x1==maxx || this.x2==maxx);  
   }
 }
 
@@ -110,6 +157,7 @@ Element.prototype = {
     this.checked=false;
   },
   check : function (id,player,table,board) {
+    var e = new Edge(table);
     var a = id.split("");
     var b = this.ele.id.split("");
     a = new Side(a[1],a[2],b[1],b[2]);
@@ -122,27 +170,27 @@ Element.prototype = {
         var i=window.document.getElementById("_ve"+a.y1+a.x2);
         i.src=color;
         if (a.inside(maxx,maxy)) {
-          table[a.y1][a.x1-1].right=true;
-          table[a.y1][a.x1].left=true;
-          var left=table[a.y1][a.x1-1].isClosed();
-          var right=table[a.y1][a.x1].isClosed();   
-        } else if (a.x1==0 || a.x2==0) {
-          table[a.y1][a.x1].left=true;
+          e.right([a.y1],[a.x1-1]);
+          e.left(a.y1,a.x1);
+          var left=e.isClosed(a.y1,a.x1-1);
+          var right=e.isClosed(a.y1,a.x);   
+        } else if (a.xout()) {
+          e.left(a.y1,a.x1);
           var left=table[a.y1][a.x1].isClosed();
-        } else if ((a.x1==maxx && a.y1==0) || (a.x2==maxx && a.y2==0)) {
-          table[0][a.x1-1].right=true;
+        } else if (a.upperright(maxx,maxy)) {
+          e.right(0,[a.x1-1]);
           var right=table[0][a.x1-1].isClosed();
-        } else if (a.x1==maxx || a.x2==maxx) {
-          table[a.y1][a.x1-1].right=true;
+        } else if (a.upperright2(maxx)) {
+          e.right(a.y1,a.x1-1);
           var right=table[a.y1][a.x1-1].isClosed();
-        } else if (a.y1==0 || a.y2==0) {
-          table[0][a.x1-1].right=true;
-          table[0][a.x1].left=true;
+        } else if (a.yleft()) {
+          e.right(0,a.x1-1);
+          e.left(0,a.x1);
           var right=table[0][a.x1-1].isClosed();
           var left=table[0][a.x1].isClosed();
-        } else if (a.y1==maxy || a.y2==maxy) {
-          table[a.y1][a.x2-1].right=true;
-          table[a.y1][a.x2].left=true;
+        } else if (a.yright(maxy)) {
+          e.right(a.y1,a.x2-1);
+          e.left(a.y1,a.x2);
           var right=table[a.y1][a.x2-1].isClosed();
           var left=table[a.y1][a.x2].isClosed();
         }
@@ -150,31 +198,31 @@ Element.prototype = {
         var i=window.document.getElementById("_ve"+a.y2+a.x1);
         i.src=color;
         if (a.inside(maxx,maxy)) {
-          table[a.y2][a.x1-1].right=true;
-          table[a.y2][a.x1].left=true;
+          e.right(a.y2,a.x1-1);
+          e.left(a.y2,a.x1);
           var right=table[a.y2][a.x1-1].isClosed();
           var left=table[a.y2][a.x1].isClosed();
-        } else if (a.x1==0 || a.x2==0) {
+        } else if (a.xout()) {
           table[a.y2][a.x1].left=true;
           var left=table[a.y2][a.x1].isClosed();
-        } else if (a.x1==maxy && a.y1==maxx|| a.x2==maxy && a.y2==maxx) {
+        } else if (a.bottomright(maxx,maxy)) {
           table[a.y2][a.x1-1].right=true;
           var left=table[a.y2][a.x1-1].isClosed();
-        } else if ((a.x1==maxx && a.y1==0) || (a.x2==maxx && a.y2==0)) {
+        } else if (a.upperright(maxx,maxy)) {
           table[0][a.x1-1].right=true;
           var right=table[0][a.x1-1].isClosed();
-        } else if (a.y1==0 || a.y2==0) {
+        } else if (a.yleft()) {
           table[0][a.x1].left=true;
           table[0][a.x1-1].right=true;
           var left=table[0][a.x1].isClosed();
           var right=table[0][a.x1-1].isClosed();
-        } else if (a.x1==maxy || a.x2==maxy) {
+        } else if (a.xright(maxy)) {
           table[a.y2][a.x1-1].right=true;
           var left=table[a.y2][a.x1-1].isClosed();
-        } else if (a.x1==maxx || a.x2==maxx) {
+        } else if (a.upperright2(maxx)) {
           table[a.y2][a.x1-1].right=true;
           var right=table[a.y2][a.x1-1].isClosed();
-        } else if (a.y1==maxy || a.y2==maxy) {
+        } else if (a.yright(maxy)) {
           table[a.y2][a.x1-1].right=true;
           table[a.y2][a.x1].left=true;
           var left=table[a.y2][a.x1-1].isClosed();
@@ -183,37 +231,37 @@ Element.prototype = {
       } else if (a.yeq() && a.xccw()) {
         var i=window.document.getElementById("_he"+a.y1+a.x1);
         i.src=color;
-        if (a.inside) {
+        if (a.inside(maxx,maxy)) {
           table[a.y1-1][a.x1].bottom=true;
           table[a.y1][a.x1].top=true;
           var left=table[a.y1-1][a.x1].isClosed();
           var right=table[a.y1][a.x1].isClosed();
-        } else if ((a.x1==0 && a.y1==0) || (a.x2==0 && a.y2==0)) {
+        } else if (a.upperleft()) {
           table[a.y1][a.x1].top=true;
           var left=table[a.y1][a.x1].isClosed();
-        } else if (a.y1==maxy && a.y2==maxy) {
+        } else if (a.yright(maxy)) {
           table[a.y1-1][a.x1].bottom=true;
           var right=table[a.y1-1][a.x1].isClosed();
-        } else if (a.x1==0 && a.y2==maxy) {
+        } else if (a.upperleft2(maxy)) {
           table[a.y2-1][a.x1].bottom=true;
           var right=table[a.y2-1][a.x1].isClosed();
-        } else if (a.x1==0 || a.x2==0) {
+        } else if (a.xout()) {
           table[a.x2][a.x1].top=true;
           table[a.x2-1][a.x1].bottom=true;
           var left=table[a.x2][a.x1].isClosed();
           var right=table[a.x2-1][a.x1].isClosed();
-        } else if ((a.x1==maxx && a.y1==0) || (a.x2==maxx && a.y2==0)) {
+        } else if (a.upperright(maxx,maxy)) {
           table[a.y1][a.x2-1].top=true;
           var left=table[a.y1][a.x2-1].isClosed();
-        } else if (a.x1==maxx && a.y1==maxy || a.x2==maxx && a.y2==maxy) {
+        } else if (a.bottomright2(maxx,maxy)) {
           table[a.y1-1][a.x1].bottom=true;
           var right=table[a.y1-1][a.x1].isClosed();  
-        } else if (a.x1==maxx || a.x2==maxx) {
+        } else if (a.upperright2(maxx)) {
           table[a.y1-1][a.x1].bottom=true;
           table[a.y1][a.x1].top=true;
           var left=table[a.y1][a.x1].isClosed();
           var right=table[a.y1-1][a.x1].isClosed();
-        } else if (a.y1==0 || a.y2==0) {
+        } else if (a.yleft()) {
           table[a.y1][a.x1].top=true;
           var left=table[a.y1][a.x1].isClosed();
         }
@@ -225,32 +273,32 @@ Element.prototype = {
           table[a.y1][a.x2].top=true;
           var left=table[a.y1-1][a.x2].isClosed();
           var right=table[a.y1][a.x2].isClosed();
-        } else if ((a.x1==0 && a.y1==0) || (a.x2==0 && a.y2==0)) {
+        } else if (a.upperleft()) {
           table[a.y1][a.x2].top=true;
           var left=table[a.y1][a.x2].isClosed();
-        } else if (a.x1==maxx && a.y1==maxy || a.x2==maxx && a.y2==maxy) {
+        } else if (a.bottomright2(maxx,maxy)) {
           table[a.y1-1][a.x2].bottom=true;
           var right=table[a.y1-1][a.x2].isClosed();  
-        } else if (a.y1==maxy && a.y2==maxy) {
+        } else if (a.yright(maxy)) {
           table[a.y2-1][a.x2].bottom=true;
           var right=table[a.y2-1][a.x2].isClosed();  
-        } else if (a.x1==0 || a.x2==0) {
+        } else if (a.xout()) {
           table[a.y1][a.x2].top=true;
           table[a.y1-1][a.x2].bottom=true;
           var left=table[a.y1][a.x2].isClosed();
           var right=table[a.y1-1][a.y2].isClosed();
-        } else if ((a.x1==maxx && a.y1==maxy) || (a.x2==maxx && a.y2==maxy)) {
+        } else if (a.bottomright2(maxx,maxy)) {
           table[a.y1][a.x2].top=true;
           var left=table[a.y1][a.x2].isClosed();
-        } else if ((a.x1==maxx && a.y1==0) || (a.x2==maxx && a.y2==0)) {
+        } else if (a.upperright(maxx,maxy)) {
           table[a.y1][a.x1-1].top=true;
           var left=table[a.y1][a.x1-1].isClosed();
-        } else if (a.x1==maxx || a.x2==maxx) {
+        } else if (a.upperright2(maxx)) {
           table[a.y1][a.x2].top=true;
           table[a.y1-1][a.x2].bottom=true;
           var left=table[a.y1][a.x2].isClosed();
           var right=table[a.y1-1][a.x2].isClosed();
-        } else if (a.y1==0 || a.y2==0) {
+        } else if (a.yleft()) {
           table[a.y1][a.x2].top=true;
           var left=table[a.y1][a.x2].isClosed();
         }
@@ -263,7 +311,6 @@ Element.prototype = {
       window.document.getElementById("_"+this.ele.id).checked=false;
       return true;
     } else if (d>1) {
-      //window.document.getElementById("_"+id).checked=false;
       this.checked=false;
       window.document.getElementById("_"+this.ele.id).checked=false;
       return false;
