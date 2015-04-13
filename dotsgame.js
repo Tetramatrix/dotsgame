@@ -466,9 +466,9 @@ Board.prototype = {
   }
 }
 
-var test3 = function () {
+var codetest = function () {
   var cd = new Board(5,5,new List());
   cd.AddPlayer(new Element(1,0,"No.","70","20"));
   cd.AddPlayer(new Element(2,0,"No.","70","20"));
 }
-var a = new test3();
+var a = new codetest();
