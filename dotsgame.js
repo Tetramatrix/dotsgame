@@ -246,10 +246,10 @@ Element.prototype = {
           table[a.y2-1][a.x1].bottom=true;
           var right=table[a.y2-1][a.x1].isClosed();
         } else if (a.xout()) {
-          table[a.x2][a.x1].top=true;
-          table[a.x2-1][a.x1].bottom=true;
-          var left=table[a.x2][a.x1].isClosed();
-          var right=table[a.x2-1][a.x1].isClosed();
+          table[a.x1][a.y1].top=true;
+          table[a.x1][a.y1-1].bottom=true;
+          var left=table[a.x1][a.y1].isClosed();
+          var right=table[a.x1][a.y1-1].isClosed();
         } else if (a.upperright(maxx,maxy)) {
           table[a.y1][a.x2-1].top=true;
           var left=table[a.y1][a.x2-1].isClosed();
@@ -304,7 +304,12 @@ Element.prototype = {
         }
       }
       if (left || right) {
-        alert ("closed");
+        var no = (player===0) ? "1" : "2";
+        eval("board.no"+no+"+=1");
+        var element=window.document.getElementById("No."+no+"0");
+        if (element) {
+          element.innerHTML = "Player "+no+":"+eval("board.no"+no);
+        }              
       }
       window.document.getElementById("_"+id).checked=false;
       this.checked=false;
@@ -326,16 +331,27 @@ var Board = function (x,y,observers)
   this.observers = observers;
   this.Create(this.x,this.y);
   this.player=2;
+  this.no1=0;
+  this.no2=0;
   return this;
 }
 
 Board.prototype = {
+  AddPlayer : function (player) {
+    window.document.body.appendChild(player.ele);
+    window.document.getElementById(player.ele.id).style.width=player.width;
+    window.document.getElementById(player.ele.id).style.height=player.height;
+    window.document.getElementById(player.ele.id).style.cssFloat="left";
+    var s=window.document.createTextNode("Player "+player.x+":0");
+    s.name="p"+player.ele.id;
+    s.id="p"+player.ele.id;
+    player.ele.appendChild(s);
+  },
   AddDot : function(dot) {
     window.document.body.appendChild(dot.ele);
     window.document.getElementById(dot.ele.id).style.width=dot.width;
     window.document.getElementById(dot.ele.id).style.height=dot.height;
     window.document.getElementById(dot.ele.id).style.cssFloat="left";
-    //dot.ele.appendChild(window.document.createTextNode("I have "+box.timer+" seconds left"));
     var b=window.document.createElement("input");
     b.type = "radio";
     b.name = "_"+dot.ele.id;
@@ -451,6 +467,8 @@ Board.prototype = {
 }
 
 var test3 = function () {
- var cd = new Board(5,5,new List());
+  var cd = new Board(5,5,new List());
+  cd.AddPlayer(new Element(1,0,"No.","70","20"));
+  cd.AddPlayer(new Element(2,0,"No.","70","20"));
 }
 var a = new test3();
