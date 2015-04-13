@@ -311,7 +311,7 @@ Element.prototype = {
           var left=table[a.y1][a.x2].isClosed();
         }
       }
-      if (left || right) {
+      if (left) {
         var no = (player===0) ? "1" : "2";
         eval("board.no"+no+"+=1");
         var element=window.document.getElementById("No."+no+"0");
@@ -319,6 +319,15 @@ Element.prototype = {
           element.innerHTML = "Player "+no+":"+eval("board.no"+no);
         }              
       }
+      if (right) {
+        var no = (player===0) ? "1" : "2";
+        eval("board.no"+no+"+=1");
+        var element=window.document.getElementById("No."+no+"0");
+        if (element) {
+          element.innerHTML = "Player "+no+":"+eval("board.no"+no);
+        }              
+      }
+      
       window.document.getElementById("_"+id).checked=false;
       this.checked=false;
       window.document.getElementById("_"+this.ele.id).checked=false;
