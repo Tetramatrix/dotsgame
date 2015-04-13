@@ -135,10 +135,10 @@ Element.prototype = {
           var left=table[0][a[1]].isClosed();
           var right=table[0][a[1]-1].isClosed();
         } else if (a[1]==maxy || b[1]==maxy) {
-          table[b[2]][a[1]].left=true;
           table[b[2]][a[1]-1].right=true;
-          var right=table[b[2]][a[1]].isClosed();
+          //table[b[2]][a[1]-1].right=true;
           var left=table[b[2]][a[1]-1].isClosed();
+          //var left=table[b[2]][a[1]-1].isClosed();
         } else if (a[1]==maxx || b[1]==maxx) {
           table[b[2]][a[1]-1].right=true;
           var right=table[b[2]][a[1]-1].isClosed();
@@ -219,7 +219,7 @@ Element.prototype = {
           table[a[2]][b[1]].top=true;
           table[a[2]-1][b[1]].bottom=true;
           var left=table[a[2]][b[1]].isClosed();
-          var right=table[a[2]-1][b[2]].isClosed();
+          var right=table[a[2]-1][b[1]].isClosed();
         } else if (a[2]==0 || b[2]==0) {
           table[a[2]][b[1]].top=true;
           var left=table[a[2]][b[1]].isClosed();
@@ -376,6 +376,6 @@ Board.prototype = {
 }
 
 var test3 = function () {
- var cd = new Board(5,4,new List());
+ var cd = new Board(5,5,new List());
 }
 var a = new test3();
