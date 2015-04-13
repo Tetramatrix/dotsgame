@@ -170,10 +170,10 @@ Element.prototype = {
         var i=window.document.getElementById("_ve"+a.y1+a.x2);
         i.src=color;
         if (a.inside(maxx,maxy)) {
-          e.right([a.y1],[a.x1-1]);
           e.left(a.y1,a.x1);
-          var left=e.isClosed(a.y1,a.x1-1);
-          var right=e.isClosed(a.y1,a.x);   
+          e.right(a.y1,a.x1-1);
+          var left=e.isClosed(a.y1,a.x1);
+          var right=e.isClosed(a.y1,a.x1-1);   
         } else if (a.xout()) {
           e.left(a.y1,a.x1);
           var left=table[a.y1][a.x1].isClosed();
@@ -189,10 +189,10 @@ Element.prototype = {
           var right=table[0][a.x1-1].isClosed();
           var left=table[0][a.x1].isClosed();
         } else if (a.yright(maxy)) {
-          e.right(a.y1,a.x2-1);
-          e.left(a.y1,a.x2);
-          var right=table[a.y1][a.x2-1].isClosed();
-          var left=table[a.y1][a.x2].isClosed();
+          e.left(a.x1,a.x2);
+          e.right(a.x1,a.x2-1);
+          var right=table[a.x1][a.x2].isClosed();
+          var left=table[a.x1][a.x2-1].isClosed();
         }
       } else if (a.xeq() && a.ycw()) {
         var i=window.document.getElementById("_ve"+a.y2+a.x1);
@@ -203,28 +203,28 @@ Element.prototype = {
           var right=table[a.y2][a.x1-1].isClosed();
           var left=table[a.y2][a.x1].isClosed();
         } else if (a.xout()) {
-          table[a.y2][a.x1].left=true;
+          e.left(a.y2,a.x1);
           var left=table[a.y2][a.x1].isClosed();
         } else if (a.bottomright(maxx,maxy)) {
-          table[a.y2][a.x1-1].right=true;
+          e.right(a.y2,a.x1-1);
           var left=table[a.y2][a.x1-1].isClosed();
         } else if (a.upperright(maxx,maxy)) {
-          table[0][a.x1-1].right=true;
+          e.right(0,a.x1-1);
           var right=table[0][a.x1-1].isClosed();
         } else if (a.yleft()) {
-          table[0][a.x1].left=true;
-          table[0][a.x1-1].right=true;
+          e.left(0,a.x1);
+          e.right(0,a.x1-1);
           var left=table[0][a.x1].isClosed();
           var right=table[0][a.x1-1].isClosed();
         } else if (a.xright(maxy)) {
-          table[a.y2][a.x1-1].right=true;
+          e.right(a.y2,a.x1-1);
           var left=table[a.y2][a.x1-1].isClosed();
         } else if (a.upperright2(maxx)) {
-          table[a.y2][a.x1-1].right=true;
+          e.right(a.y2,a.x1-1);
           var right=table[a.y2][a.x1-1].isClosed();
         } else if (a.yright(maxy)) {
-          table[a.y2][a.x1-1].right=true;
-          table[a.y2][a.x1].left=true;
+          e.right(a.y2,a.x1);
+          e.left(a.y2,a.x1);
           var left=table[a.y2][a.x1-1].isClosed();
           var right=table[a.y2][a.x1].isClosed();
         }
@@ -246,8 +246,8 @@ Element.prototype = {
           table[a.y2-1][a.x1].bottom=true;
           var right=table[a.y2-1][a.x1].isClosed();
         } else if (a.xout()) {
-          table[a.x1][a.y1].top=true;
-          table[a.x1][a.y1-1].bottom=true;
+          table[a.y1][a.y1].top=true;
+          table[a.y1-1][a.y1].bottom=true;
           var left=table[a.x1][a.y1].isClosed();
           var right=table[a.x1][a.y1-1].isClosed();
         } else if (a.upperright(maxx,maxy)) {
