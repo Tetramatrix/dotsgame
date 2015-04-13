@@ -123,6 +123,7 @@ Side.prototype = {
 }
 
 var Block = function() {
+  this.isclosed=0;
   this.left=0;
   this.top=0;
   this.right=0;
@@ -132,7 +133,14 @@ var Block = function() {
 
 Block.prototype = {
   isClosed : function () {
-    return this.left && this.top && this.right && this.bottom;
+    if (this.isclosed==true) {
+      return false;
+    } else if (this.left && this.top && this.right && this.bottom) {
+      this.isclosed=true;
+      return true;
+    } else {
+      return this.left && this.top && this.right && this.bottom;
+    }
   }
 }
 
@@ -189,10 +197,10 @@ Element.prototype = {
           var right=table[0][a.x1-1].isClosed();
           var left=table[0][a.x1].isClosed();
         } else if (a.yright(maxy)) {
-          e.left(a.x1,a.x2);
-          e.right(a.x1,a.x2-1);
-          var right=table[a.x1][a.x2].isClosed();
-          var left=table[a.x1][a.x2-1].isClosed();
+          e.left(a.y1,a.x1);
+          e.right(a.y1,a.x1-1);
+          var left=table[a.y1][a.x1].isClosed();
+          var right=table[a.y1][a.x1-1].isClosed();
         }
       } else if (a.xeq() && a.ycw()) {
         var i=window.document.getElementById("_ve"+a.y2+a.x1);
@@ -223,10 +231,10 @@ Element.prototype = {
           e.right(a.y2,a.x1-1);
           var right=table[a.y2][a.x1-1].isClosed();
         } else if (a.yright(maxy)) {
-          e.right(a.y2,a.x1);
           e.left(a.y2,a.x1);
-          var left=table[a.y2][a.x1-1].isClosed();
-          var right=table[a.y2][a.x1].isClosed();
+          e.right(a.y2,a.x1-1);
+          var left=table[a.y2][a.x1].isClosed();
+          var right=table[a.y2][a.x1-1].isClosed();
         }
       } else if (a.yeq() && a.xccw()) {
         var i=window.document.getElementById("_he"+a.y1+a.x1);
@@ -246,10 +254,10 @@ Element.prototype = {
           table[a.y2-1][a.x1].bottom=true;
           var right=table[a.y2-1][a.x1].isClosed();
         } else if (a.xout()) {
-          table[a.y1][a.y1].top=true;
-          table[a.y1-1][a.y1].bottom=true;
-          var left=table[a.x1][a.y1].isClosed();
-          var right=table[a.x1][a.y1-1].isClosed();
+          table[a.y1][a.x1].top=true;
+          table[a.y1-1][a.x1].bottom=true;
+          var left=table[a.y1][a.x1].isClosed();
+          var right=table[a.y1-1][a.x1].isClosed();
         } else if (a.upperright(maxx,maxy)) {
           table[a.y1][a.x2-1].top=true;
           var left=table[a.y1][a.x2-1].isClosed();
