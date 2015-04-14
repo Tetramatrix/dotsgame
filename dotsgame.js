@@ -40,6 +40,12 @@ var Edge = function (table) {
 }
 
 Edge.prototype = {
+  top : function(x,y) {
+    return this.table[x][y].top=true;
+  },
+  bottom : function (x,y) {
+    return this.table[x][y].bottom=true;
+  },
   right : function(x,y) {
     return this.table[x][y].right=true;
   },
@@ -144,7 +150,8 @@ Block.prototype = {
   }
 }
 
-var Element = function (x,y,name,width,height,paddingleft) {
+var Element = function (uid,x,y,name,width,height,paddingleft) {
+  this.uid=uid;
   this.paddingleft = (paddingleft===0) ? "0px" : paddingleft;
   this.width = width || "18px";
   this.height = height || "20px";
@@ -152,22 +159,22 @@ var Element = function (x,y,name,width,height,paddingleft) {
   this.y = (y===0) ? 0 : y;
   this.name = name || "nl";
   this.ele = document.createElement("div");
-  this.ele.id = this.name+this.x+this.y;
+  this.ele.id = this.uid+this.name+this.x+this.y;
   this.checked=false;
   return this;
 }
 
 Element.prototype = {
   update : function () {
-    this.checked=true;
+    return this.checked=true;
   },
   uncheck : function () {
-    this.checked=false;
+    return this.checked=false;
   },
   check : function (id,player,table,board) {
     var e = new Edge(table);
-    var a = id.split("");
-    var b = this.ele.id.split("");
+    var a = id.slice(5,8).split("");
+    var b = this.ele.id.slice(5,8).split("");
     a = new Side(a[1],a[2],b[1],b[2]);
     var color = (player===0) ? "red.gif" : color="blue.gif";
     var maxx=board.x-1;
@@ -175,7 +182,7 @@ Element.prototype = {
     var d = a.taxicabd();
     if (d==1) {
       if (a.xeq() && a.yccw()) {
-        var i=window.document.getElementById("_ve"+a.y1+a.x2);
+        var i=window.document.getElementById("_"+this.uid+"ve"+a.y1+a.x2);
         i.src=color;
         if (a.inside(maxx,maxy)) {
           e.left(a.y1,a.x1);
@@ -184,137 +191,137 @@ Element.prototype = {
           var right=e.isClosed(a.y1,a.x1-1);   
         } else if (a.xout()) {
           e.left(a.y1,a.x1);
-          var left=table[a.y1][a.x1].isClosed();
+          var left=e.isClosed(a.y1,a.x1);
         } else if (a.upperright(maxx,maxy)) {
           e.right(0,[a.x1-1]);
-          var right=table[0][a.x1-1].isClosed();
+          var right=e.isClosed(0,a.x1-1);
         } else if (a.upperright2(maxx)) {
           e.right(a.y1,a.x1-1);
-          var right=table[a.y1][a.x1-1].isClosed();
+          var right=e.isClosed(a.y1,a.x1-1);
         } else if (a.yleft()) {
           e.right(0,a.x1-1);
           e.left(0,a.x1);
-          var right=table[0][a.x1-1].isClosed();
-          var left=table[0][a.x1].isClosed();
+          var right=e.isClosed(0,a.x1-1);
+          var left=e.isClosed(0,a.x1);
         } else if (a.yright(maxy)) {
           e.left(a.y1,a.x1);
           e.right(a.y1,a.x1-1);
-          var left=table[a.y1][a.x1].isClosed();
-          var right=table[a.y1][a.x1-1].isClosed();
+          var left=e.isClosed(a.y1,a.x1);
+          var right=e.isClosed(a.y1,a.x1-1);
         }
       } else if (a.xeq() && a.ycw()) {
-        var i=window.document.getElementById("_ve"+a.y2+a.x1);
+        var i=window.document.getElementById("_"+this.uid+"ve"+a.y2+a.x1);
         i.src=color;
         if (a.inside(maxx,maxy)) {
           e.right(a.y2,a.x1-1);
           e.left(a.y2,a.x1);
-          var right=table[a.y2][a.x1-1].isClosed();
-          var left=table[a.y2][a.x1].isClosed();
+          var right=e.isClosed(a.y2,a.x1-1);
+          var left=e.isClosed(a.y2,a.x1);
         } else if (a.xout()) {
           e.left(a.y2,a.x1);
-          var left=table[a.y2][a.x1].isClosed();
+          var left=e.isClosed(a.y2,a.x1);
         } else if (a.bottomright(maxx,maxy)) {
           e.right(a.y2,a.x1-1);
-          var left=table[a.y2][a.x1-1].isClosed();
+          var left=e.isClosed(a.y2,a.x1-1);
         } else if (a.upperright(maxx,maxy)) {
           e.right(0,a.x1-1);
-          var right=table[0][a.x1-1].isClosed();
+          var right=e.isClosed(0,a.x1-1);
         } else if (a.yleft()) {
           e.left(0,a.x1);
           e.right(0,a.x1-1);
-          var left=table[0][a.x1].isClosed();
-          var right=table[0][a.x1-1].isClosed();
+          var left=e.isClosed(0,a.x1);
+          var right=e.isClosed(0,a.x1-1);
         } else if (a.xright(maxy)) {
           e.right(a.y2,a.x1-1);
-          var left=table[a.y2][a.x1-1].isClosed();
+          var left=e.isClosed(a.y2,a.x1-1);
         } else if (a.upperright2(maxx)) {
           e.right(a.y2,a.x1-1);
-          var right=table[a.y2][a.x1-1].isClosed();
+          var right=e.isClosed(a.y2,a.x1-1);
         } else if (a.yright(maxy)) {
           e.left(a.y2,a.x1);
           e.right(a.y2,a.x1-1);
-          var left=table[a.y2][a.x1].isClosed();
-          var right=table[a.y2][a.x1-1].isClosed();
+          var left=e.isClosed(a.y2,a.x1);
+          var right=e.isClosed(a.y2,a.x1-1);
         }
       } else if (a.yeq() && a.xccw()) {
-        var i=window.document.getElementById("_he"+a.y1+a.x1);
+        var i=window.document.getElementById("_"+this.uid+"he"+a.y1+a.x1);
         i.src=color;
         if (a.inside(maxx,maxy)) {
-          table[a.y1-1][a.x1].bottom=true;
-          table[a.y1][a.x1].top=true;
-          var left=table[a.y1-1][a.x1].isClosed();
-          var right=table[a.y1][a.x1].isClosed();
+          e.bottom(a.y1-1,a.x1);
+          e.top(a.y1,a.x1);
+          var left=e.isClosed(a.y1-1,a.x1);
+          var right=e.isClosed(a.y1,a.x1);
         } else if (a.upperleft()) {
-          table[a.y1][a.x1].top=true;
-          var left=table[a.y1][a.x1].isClosed();
+          e.top(a.y1,a.x1);
+          var left=e.isClosed(a.y1,a.x1);
         } else if (a.yright(maxy)) {
-          table[a.y1-1][a.x1].bottom=true;
-          var right=table[a.y1-1][a.x1].isClosed();
+          e.bottom(a.y1-1,a.x1);
+          var right=e.isClosed(a.y1-1,a.x1);
         } else if (a.upperleft2(maxy)) {
-          table[a.y2-1][a.x1].bottom=true;
-          var right=table[a.y2-1][a.x1].isClosed();
+          e.bottom(a.y2-1,a.x1);
+          var right=e.isClosed(a.y2-1,a.x1);
         } else if (a.xout()) {
-          table[a.y1][a.x1].top=true;
-          table[a.y1-1][a.x1].bottom=true;
-          var left=table[a.y1][a.x1].isClosed();
-          var right=table[a.y1-1][a.x1].isClosed();
+          e.top(a.y1,a.x1);
+          e.bottom(a.y1-1,a.x1);
+          var left=e.isClosed(a.y1,a.x1);
+          var right=e.isClosed(a.y1-1,a.x1);
         } else if (a.upperright(maxx,maxy)) {
-          table[a.y1][a.x2-1].top=true;
-          var left=table[a.y1][a.x2-1].isClosed();
+          e.top(a.y1,a.x2-1);
+          var left=e.isClosed(a.y1,a.x2-1);
         } else if (a.bottomright2(maxx,maxy)) {
-          table[a.y1-1][a.x1].bottom=true;
-          var right=table[a.y1-1][a.x1].isClosed();  
+          e.bottom(a.y1-1,a.x1);
+          var right=e.isClosed(a.y1-1,a.x1);  
         } else if (a.upperright2(maxx)) {
-          table[a.y1-1][a.x1].bottom=true;
-          table[a.y1][a.x1].top=true;
-          var left=table[a.y1][a.x1].isClosed();
-          var right=table[a.y1-1][a.x1].isClosed();
+          e.bottom(a.y1-1,a.x1);
+          e.top(a.y1,a.x1);
+          var left=e.isClosed(a.y1,a.x1);
+          var right=e.isClosed(a.y1-1,a.x1);
         } else if (a.yleft()) {
-          table[a.y1][a.x1].top=true;
-          var left=table[a.y1][a.x1].isClosed();
+          e.top(a.y1,a.x1);
+          var left=e.isClosed(a.y1,a.x1);
         }
       } else if (a.yeq() && a.xcw()) {
-        var i=window.document.getElementById("_he"+a.y1+a.x2);
+        var i=window.document.getElementById("_"+this.uid+"he"+a.y1+a.x2);
         i.src=color;
         if (a.inside(maxx,maxy)) {
-          table[a.y1-1][a.x2].bottom=true;
-          table[a.y1][a.x2].top=true;
-          var left=table[a.y1-1][a.x2].isClosed();
-          var right=table[a.y1][a.x2].isClosed();
+          e.bottom(a.y1-1,a.x2);
+          e.top(a.y1,a.x2);
+          var left=e.isClosed(a.y1-1,a.x2);
+          var right=e.isClosed(a.y1,a.x2);
         } else if (a.upperleft()) {
-          table[a.y1][a.x2].top=true;
-          var left=table[a.y1][a.x2].isClosed();
+          e.top(a.y1,a.x2);
+          var left=e.isClosed(a.y1,a.x2);
         } else if (a.bottomright2(maxx,maxy)) {
-          table[a.y1-1][a.x2].bottom=true;
-          var right=table[a.y1-1][a.x2].isClosed();  
+          e.bottom(a.y1-1,a.x2);
+          var right=e.isClosed(a.y1-1,a.x2);  
         } else if (a.yright(maxy)) {
-          table[a.y2-1][a.x2].bottom=true;
-          var right=table[a.y2-1][a.x2].isClosed();  
+          e.bottom(a.y2-1,a.x2);
+          var right=e.isClosed(a.y2-1,a.x2);  
         } else if (a.xout()) {
-          table[a.y1][a.x2].top=true;
-          table[a.y1-1][a.x2].bottom=true;
-          var left=table[a.y1][a.x2].isClosed();
-          var right=table[a.y1-1][a.y2].isClosed();
+          e.top(a.y1,a.x2);
+          e.bottom(a.y1-1,a.x2);
+          var left=e.isClosed(a.y1,a.x2);
+          var right=e.isClosed(a.y1-1,a.y2);
         } else if (a.bottomright2(maxx,maxy)) {
-          table[a.y1][a.x2].top=true;
-          var left=table[a.y1][a.x2].isClosed();
+          e.top(a.y1,a.x2);
+          var left=e.isClosed(a.y1,a.x2);
         } else if (a.upperright(maxx,maxy)) {
-          table[a.y1][a.x1-1].top=true;
-          var left=table[a.y1][a.x1-1].isClosed();
+          e.top(a.y1,a.x1-1);
+          var left=e.isClosed(a.y1,a.x1-1);
         } else if (a.upperright2(maxx)) {
-          table[a.y1][a.x2].top=true;
-          table[a.y1-1][a.x2].bottom=true;
-          var left=table[a.y1][a.x2].isClosed();
-          var right=table[a.y1-1][a.x2].isClosed();
+          e.top(a.y1,a.x2);
+          e.bottom(a.y1-1,a.x2);
+          var left=e.isClosed(a.y1,a.x2);
+          var right=e.isClosed(a.y1-1,a.x2);
         } else if (a.yleft()) {
-          table[a.y1][a.x2].top=true;
-          var left=table[a.y1][a.x2].isClosed();
+          e.top(a.y1,a.x2);
+          var left=e.isClosed(a.y1,a.x2);
         }
       }
       if (left) {
         var no = (player===0) ? "1" : "2";
         eval("board.no"+no+"+=1");
-        var element=window.document.getElementById("No."+no+"0");
+        var element=window.document.getElementById(this.uid+"No."+no+"0");
         if (element) {
           element.innerHTML = "Player "+no+":"+eval("board.no"+no);
         }              
@@ -322,19 +329,27 @@ Element.prototype = {
       if (right) {
         var no = (player===0) ? "1" : "2";
         eval("board.no"+no+"+=1");
-        var element=window.document.getElementById("No."+no+"0");
+        var element=window.document.getElementById(this.uid+"No."+no+"0");
         if (element) {
           element.innerHTML = "Player "+no+":"+eval("board.no"+no);
         }              
+      }
+      if (left && right) {
+        board.player++;
+      } else if (left) {
+        board.player++;
+      } else if (right) {
+        board.player++;
       }
       
       window.document.getElementById("_"+id).checked=false;
       this.checked=false;
       window.document.getElementById("_"+this.ele.id).checked=false;
       return true;
+    
     } else if (d>1) {
       this.checked=false;
-      window.document.getElementById("_"+this.ele.id).checked=false;
+      window.document.getElementById(this.uid+"_"+this.ele.id).checked=false;
       return false;
     }
   }
@@ -342,6 +357,8 @@ Element.prototype = {
 
 var Board = function (x,y,observers)
 {
+  this.possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  this.uid = "";
   this.x=x;
   this.y=y;
   this.table = [];
@@ -354,14 +371,19 @@ var Board = function (x,y,observers)
 }
 
 Board.prototype = {
+  makeid : function () {
+    for( var i=0; i < 5; i++ ) {
+      this.uid += this.possible.charAt(Math.floor(Math.random() * this.possible.length));
+    }
+  },
   AddPlayer : function (player) {
     window.document.body.appendChild(player.ele);
     window.document.getElementById(player.ele.id).style.width=player.width;
     window.document.getElementById(player.ele.id).style.height=player.height;
     window.document.getElementById(player.ele.id).style.cssFloat="left";
     var s=window.document.createTextNode("Player "+player.x+":0");
-    s.name="p"+player.ele.id;
-    s.id="p"+player.ele.id;
+    s.name=this.uid+"p"+player.ele.id;
+    s.id=this.uid+"p"+player.ele.id;
     player.ele.appendChild(s);
   },
   AddDot : function(dot) {
@@ -455,37 +477,31 @@ Board.prototype = {
     }
   },
   Create : function(x,y) {
+    this.makeid();
     for (i=0,j=0,endy=(y-1),endx=(x-1);i<endy;i++) {
       this.table[i] = new Array(endx);
     }
     for (i=0,j=0;i<y;i++) {
       for (j=0;j<x;j++) {
-        this.AddDot(new Element(j,i,"d"));
+        this.AddDot(new Element(this.uid,j,i,"d"));
         if (j<endx) {    
-          this.AddHEdge(new Element(i,j,"he",25,5));
+          this.AddHEdge(new Element(this.uid,i,j,"he",25,5));
         }
       }
-      this.AddNewline(new Element(i,j));
+      this.AddNewline(new Element(this.uid,i,j));
       if (i<endy) {
         for (j=0;j<x;j++) {
           if (j==0) {
-            this.AddVEdge(new Element(i,j,"ve",5,25,7));
+            this.AddVEdge(new Element(this.uid,i,j,"ve",5,25,7));
           } else {
-            this.AddVEdge(new Element(i,j,"ve",5,25));
+            this.AddVEdge(new Element(this.uid,i,j,"ve",5,25));
           }
           if (j<endx) {    
-            this.AddBlock(new Element(i,j,"b",40,25));
+            this.AddBlock(new Element(this.uid,i,j,"b",40,25));
           }
         }
-        this.AddNewline(new Element(i+1,j+1));
+        this.AddNewline(new Element(this.uid,i+1,j+1));
       }
     }
   }
 }
-
-var codetest = function () {
-  var cd = new Board(5,5,new List());
-  cd.AddPlayer(new Element(1,0,"No.","70","20"));
-  cd.AddPlayer(new Element(2,0,"No.","70","20"));
-}
-var a = new codetest();

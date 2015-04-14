@@ -1,7 +1,6 @@
 window.onload = function ready ()
 {
- cd = new Board(new List());
- for (var i=0;i<10;i++) {
-  //cd.AddBox(new Subject(Math.floor((Math.random() * 10) + 1)));
- }
-} 
+  var cd = new Board(5,5,new List());
+  cd.AddPlayer(new Element(cd.uid,1,0,"No.","70","20"));
+  cd.AddPlayer(new Element(cd.uid,2,0,"No.","70","20"));
+}
